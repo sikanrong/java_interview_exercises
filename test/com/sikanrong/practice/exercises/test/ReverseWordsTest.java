@@ -11,6 +11,6 @@ public class ReverseWordsTest {
 		String actual = ReverseWords.reverseWords("Do or do not, there is no try.");
 		String expected = "try. no is there not, do or Do";
 		
-		assertEquals(actual,expected);
+		assertEquals(expected, actual);
 	}
 }
