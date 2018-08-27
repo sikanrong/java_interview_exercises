@@ -1,8 +1,9 @@
-package com.sikanrong.practice.exercises.test;
+package com.sikanrong.practice.exercises.test.stringsarrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import com.sikanrong.practice.exercises.RemoveSpecifiedCharacters;
+
+import com.sikanrong.practice.exercises.stringsarrays.RemoveSpecifiedCharacters;
 
 public class RemoveSpecifiedCharactersTest {
 

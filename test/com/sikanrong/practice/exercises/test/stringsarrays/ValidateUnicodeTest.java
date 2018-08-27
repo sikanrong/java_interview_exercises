@@ -1,11 +1,12 @@
-package com.sikanrong.practice.exercises.test;
+package com.sikanrong.practice.exercises.test.stringsarrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
-import com.sikanrong.practice.exercises.ValidateUnicode;
+
+import com.sikanrong.practice.exercises.stringsarrays.ValidateUnicode;
 
 public class ValidateUnicodeTest {
 	//Here I'm going to create a (valid) UTF-8 string from java's typical UTF-16 strings

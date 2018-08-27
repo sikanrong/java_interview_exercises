@@ -1,8 +1,9 @@
-package com.sikanrong.practice.exercises.test;
+package com.sikanrong.practice.exercises.test.stringsarrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import com.sikanrong.practice.exercises.IntegerStringConversion;
+
+import com.sikanrong.practice.exercises.stringsarrays.IntegerStringConversion;
 
 //TODO: Let's add edge-case tests like Integer.MAX_VALUE and 0 and stuff like that.
 

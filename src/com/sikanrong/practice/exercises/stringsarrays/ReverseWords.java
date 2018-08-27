@@ -1,4 +1,4 @@
-package com.sikanrong.practice.exercises;
+package com.sikanrong.practice.exercises.stringsarrays;
 import java.util.Stack;
 
 public class ReverseWords {
