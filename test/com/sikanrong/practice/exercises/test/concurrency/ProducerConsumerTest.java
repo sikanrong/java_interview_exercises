@@ -19,6 +19,11 @@ public class ProducerConsumerTest {
 				e.printStackTrace();
 			}
 			
+			//So logically, these two threads are basically fighting each other
+			//over the value of nextIndex, and as a byproduct the array keeps
+			//getting new random ints added to it each time nextIndex is augmented.
+			//if the array keeps changing, then we know the threads haven't 
+			//deadlocked.
 			assertFalse(Arrays.equals(ib.buffer, lastBuffer));
 			System.arraycopy(ib.buffer, 0, lastBuffer, 0, 8);
 		}
