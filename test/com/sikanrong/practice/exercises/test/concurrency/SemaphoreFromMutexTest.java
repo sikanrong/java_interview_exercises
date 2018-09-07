@@ -57,7 +57,7 @@ public class SemaphoreFromMutexTest {
 				if(!stalls[i]) {
 					myStall = i;
 					stalls[i] = true;
-					Thread.sleep(100);
+					Thread.sleep(1);
 					return;
 				}
 			}
