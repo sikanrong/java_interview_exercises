@@ -10,6 +10,7 @@ import com.sikanrong.practice.exercises.concurrency.MatrixMultiplyParallel.Matri
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MatrixMultiplyParallelTest {
+	MatrixMultiplyParallel mmp = new MatrixMultiplyParallel();
 	
 	@Test 
 	void testMatrixMultiplyEven() {
@@ -30,7 +31,7 @@ public class MatrixMultiplyParallelTest {
 		
 		Matrix<Integer> a = new Matrix<>(ar_a);
 		Matrix<Integer> b = new Matrix<>(ar_b);
-		Matrix<Integer> actual = MatrixMultiplyParallel.multiply(a, b);
+		Matrix<Integer> actual = mmp.multiply(a, b);
 		Matrix<Integer> expected = new Matrix<>(ar_e);
 		
 		assertArrayEquals(expected.toArray(), actual.toArray());
@@ -59,7 +60,7 @@ public class MatrixMultiplyParallelTest {
 		
 		Matrix<Integer> a = new Matrix<>(ar_a);
 		Matrix<Integer> b = new Matrix<>(ar_b);
-		Matrix<Integer> actual = MatrixMultiplyParallel.multiply(a, b);
+		Matrix<Integer> actual = mmp.multiply(a, b);
 		Matrix<Integer> expected = new Matrix<>(ar_e);
 		
 		assertArrayEquals(expected.toArray(), actual.toArray());
@@ -76,7 +77,7 @@ public class MatrixMultiplyParallelTest {
 		
 		Matrix<Integer> a = new Matrix<>(ar_a);
 		Matrix<Integer> b = new Matrix<>(ar_b);
-		Matrix<Integer> actual = MatrixMultiplyParallel.multiply(a, b);
+		Matrix<Integer> actual = mmp.multiply(a, b);
 		Matrix<Integer> expected = new Matrix<>(ar_e);
 		
 		assertArrayEquals(expected.toArray(), actual.toArray());
@@ -92,7 +93,7 @@ public class MatrixMultiplyParallelTest {
 		
 		Matrix<Integer> a = new Matrix<>(ar_a);
 		Matrix<Integer> b = new Matrix<>(ar_b);
-		Matrix<Integer> actual = MatrixMultiplyParallel.multiply(a, b);
+		Matrix<Integer> actual = mmp.multiply(a, b);
 		Matrix<Integer> expected = new Matrix<>(ar_e);
 		
 		assertArrayEquals(expected.toArray(), actual.toArray());
@@ -108,7 +109,7 @@ public class MatrixMultiplyParallelTest {
 		
 		Matrix<Integer> a = new Matrix<>(ar_a);
 		Matrix<Integer> b = new Matrix<>(ar_b);
-		Matrix<Integer> actual = MatrixMultiplyParallel.multiply(a, b);
+		Matrix<Integer> actual = mmp.multiply(a, b);
 		Matrix<Integer> expected = new Matrix<>(ar_e);
 		
 		assertArrayEquals(expected.toArray(), actual.toArray());

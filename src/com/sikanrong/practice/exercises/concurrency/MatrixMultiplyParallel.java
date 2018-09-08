@@ -1,8 +1,20 @@
+//Alex Pilafian 2018
+//Totally original implementation based on pseudo-code presented in CLRS p.794
+
 package com.sikanrong.practice.exercises.concurrency;
 
 import java.util.stream.IntStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MatrixMultiplyParallel {
+	private static ExecutorService pool;
+	
+	public MatrixMultiplyParallel() {
+		pool = Executors.newCachedThreadPool();
+	}
 
 	public static class Matrix<T> {
 
@@ -137,62 +149,104 @@ public class MatrixMultiplyParallel {
 		}
 
 	}
-
-	private static void matrixMultiplyRecursive(
+	
+	private static class MultiplyRecursiveStep implements Runnable{
+		private Matrix<Integer> c; 
+		private Matrix<Integer> a;
+		private Matrix<Integer> b;
+		private Matrix.Partition pc; 
+		private Matrix.Partition pa;
+		private Matrix.Partition pb;
+		
+		public MultiplyRecursiveStep(
 			Matrix<Integer> c, 
 			Matrix<Integer> a, 
 			Matrix<Integer> b,
 			Matrix.Partition pc, 
 			Matrix.Partition pa, 
 			Matrix.Partition pb
-	) {
-		if( pc.hasZeroDims() || 
-			pa.hasZeroDims() || 
-			pb.hasZeroDims() ) {
-			return;
-		} else if (
-			pc.isSingleElement() && 
-			pa.isSingleElement() && 
-			pb.isSingleElement()
 		) {
-			int _a = a.get(pa.view[0], pa.view[1]);
-			int _b = b.get(pb.view[0], pb.view[1]);
-			int p = _a * _b;
-			c.set(p, pc.view[0], pc.view[1]);
-		} else {
-			Matrix<Integer> t = new Matrix<>(c.getDims());
+			this.c = c;
+			this.a = a;
+			this.b = b;
+			this.pc = pc;
+			this.pa = pa;
+			this.pb = pb;
+		}
+		
+		@SuppressWarnings("rawtypes")
+		public void run() {
+			if( pc.hasZeroDims() || 
+				pa.hasZeroDims() || 
+				pb.hasZeroDims() ) {
+				return;
+			} else if (
+				pc.isSingleElement() && 
+				pa.isSingleElement() && 
+				pb.isSingleElement()
+			) {
+				int _a = a.get(pa.view[0], pa.view[1]);
+				int _b = b.get(pb.view[0], pb.view[1]);
+				int p = _a * _b;
+				c.set(p, pc.view[0], pc.view[1]);
+			} else {
+				Matrix<Integer> t = new Matrix<>(c.getDims());
+				
+				Future[] _f = new Future[8];
 
-			matrixMultiplyRecursive(c, a, b, c.fpart(0, 0, pc), a.fpart(0, 0, pa), b.fpart(0, 0, pb));
-			matrixMultiplyRecursive(t, a, b, t.fpart(0, 0, pc), a.fpart(1, 0, pa), b.fpart(0, 1, pb));
-			
-			matrixMultiplyRecursive(c, a, b, c.fpart(1, 0, pc), a.fpart(0, 0, pa), b.fpart(1, 0, pb));
-			matrixMultiplyRecursive(t, a, b, t.fpart(1, 0, pc), a.fpart(1, 0, pa), b.fpart(1, 1, pb));
-			
-			matrixMultiplyRecursive(c, a, b, c.fpart(0, 1, pc), a.fpart(0, 1, pa), b.fpart(0, 0, pb));
-			matrixMultiplyRecursive(t, a, b, t.fpart(0, 1, pc), a.fpart(1, 1, pa), b.fpart(0, 1, pb));
-			
-			matrixMultiplyRecursive(c, a, b, c.fpart(1, 1, pc), a.fpart(0, 1, pa), b.fpart(1, 0, pb));
-			matrixMultiplyRecursive(t, a, b, t.fpart(1, 1, pc), a.fpart(1, 1, pa), b.fpart(1, 1, pb));
-
-			for(int i = pc.view[0]; i < (pc.view[0] + pc.dims[0]); i++) {
-				for(int j = pc.view[1]; j < (pc.view[1] + pc.dims[1]); j++) {
-					int _c = c.get(i, j);
-					int _t = t.get(i, j);
-					int s = _c + _t;
-					c.set(s, i, j);
+				_f[0] = pool.submit(new MultiplyRecursiveStep(c, a, b, c.fpart(0, 0, pc), a.fpart(0, 0, pa), b.fpart(0, 0, pb)));
+				_f[1] = pool.submit(new MultiplyRecursiveStep(t, a, b, t.fpart(0, 0, pc), a.fpart(1, 0, pa), b.fpart(0, 1, pb)));
+				
+				_f[2] = pool.submit(new MultiplyRecursiveStep(c, a, b, c.fpart(1, 0, pc), a.fpart(0, 0, pa), b.fpart(1, 0, pb)));
+				_f[3] = pool.submit(new MultiplyRecursiveStep(t, a, b, t.fpart(1, 0, pc), a.fpart(1, 0, pa), b.fpart(1, 1, pb)));
+				
+				_f[4] = pool.submit(new MultiplyRecursiveStep(c, a, b, c.fpart(0, 1, pc), a.fpart(0, 1, pa), b.fpart(0, 0, pb)));
+				_f[5] = pool.submit(new MultiplyRecursiveStep(t, a, b, t.fpart(0, 1, pc), a.fpart(1, 1, pa), b.fpart(0, 1, pb)));
+				
+				_f[6] = pool.submit(new MultiplyRecursiveStep(c, a, b, c.fpart(1, 1, pc), a.fpart(0, 1, pa), b.fpart(1, 0, pb)));
+				_f[7] = pool.submit(new MultiplyRecursiveStep(t, a, b, t.fpart(1, 1, pc), a.fpart(1, 1, pa), b.fpart(1, 1, pb)));
+				
+				try {
+					for(int i = 0; i < 8; i++) {
+						_f[i].get();
+					}
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				for(int i = pc.view[0]; i < (pc.view[0] + pc.dims[0]); i++) {
+					for(int j = pc.view[1]; j < (pc.view[1] + pc.dims[1]); j++) {
+						int _c = c.get(i, j);
+						int _t = t.get(i, j);
+						int s = _c + _t;
+						c.set(s, i, j);
+					};
 				};
-			};
+			}
 		}
 	}
 
-	public static Matrix<Integer> multiply(Matrix<Integer> a, Matrix<Integer> b) {
+	@SuppressWarnings("rawtypes")
+	public Matrix<Integer> multiply(Matrix<Integer> a, Matrix<Integer> b) {		
 		Matrix<Integer> c = new Matrix<>(b.getDims()[0], a.getDims()[1]);
 		
 		a.setDefault(0);
 		b.setDefault(0);
 		c.setDefault(0);
 		
-		matrixMultiplyRecursive(c, a, b, c.fullPartition(), a.fullPartition(), b.fullPartition());
+		Future f = pool.submit(new MultiplyRecursiveStep(c,a,b, c.fullPartition(), a.fullPartition(), b.fullPartition()));
+		
+		try {
+			f.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return c;
 	}
 }
