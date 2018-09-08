@@ -216,14 +216,14 @@ public class MatrixMultiplyParallel {
 					e.printStackTrace();
 				}
 				
-				for(int i = pc.view[0]; i < (pc.view[0] + pc.dims[0]); i++) {
-					for(int j = pc.view[1]; j < (pc.view[1] + pc.dims[1]); j++) {
+				IntStream.range(pc.view[0], (pc.view[0] + pc.dims[0])).parallel().forEach(i -> {
+					IntStream.range(pc.view[1], (pc.view[1] + pc.dims[1])).parallel().forEach(j -> {
 						int _c = c.get(i, j);
 						int _t = t.get(i, j);
 						int s = _c + _t;
 						c.set(s, i, j);
-					};
-				};
+					});
+				});
 			}
 		}
 	}
