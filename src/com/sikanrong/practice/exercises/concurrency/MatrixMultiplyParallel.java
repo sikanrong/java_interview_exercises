@@ -186,7 +186,7 @@ public class MatrixMultiplyParallel {
 	}
 
 	public static Matrix<Integer> multiply(Matrix<Integer> a, Matrix<Integer> b) {
-		Matrix<Integer> c = new Matrix<>(a.getDims());
+		Matrix<Integer> c = new Matrix<>(b.getDims()[0], a.getDims()[1]);
 		
 		a.setDefault(0);
 		b.setDefault(0);
