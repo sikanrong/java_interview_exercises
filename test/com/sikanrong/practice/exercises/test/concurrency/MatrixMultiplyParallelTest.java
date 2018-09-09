@@ -116,5 +116,21 @@ public class MatrixMultiplyParallelTest {
 		
 	}
 	
+	@Test 
+	void testMatrixMultiplyNonSymmetrical() {
+		Integer[][] ar_a = {{1,1,1}};
+		Integer[][] ar_b = {{1,1},{1,1},{1,1}};
+		
+		Integer[][] ar_e = {{3,3}};
+		
+		Matrix<Integer> a = new Matrix<>(ar_a);
+		Matrix<Integer> b = new Matrix<>(ar_b);
+		Matrix<Integer> actual = mmp.multiply(a, b);
+		Matrix<Integer> expected = new Matrix<>(ar_e);
+		
+		assertArrayEquals(expected.toArray(), actual.toArray());
+		
+	}
+	
 	
 }
